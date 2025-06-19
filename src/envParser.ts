@@ -68,7 +68,12 @@ export class EnvParser {
   static serialize(envData: EnvData): string {
     const lines: string[] = [];
 
-    for (const variable of envData.variables) {
+    // Filter out variables without keys
+    const validVariables = envData.variables.filter(variable =>
+      variable.key && variable.key.trim().length > 0
+    );
+
+    for (const variable of validVariables) {
       // Add description as comment if provided
       if (variable.description) {
         lines.push(`# ${variable.description}`);

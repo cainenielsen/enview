@@ -24,8 +24,8 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 28px;
-            padding-bottom: 16px;
+            margin-bottom: 32px;
+            padding: 0 20px 20px 20px;
             border-bottom: 1px solid var(--vscode-widget-border);
         }
 
@@ -80,7 +80,7 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
             display: flex;
             align-items: center;
             gap: 24px;
-            margin-bottom: 24px;
+            margin: 0 20px 28px 20px;
         }
 
         .format-tabs {
@@ -265,7 +265,7 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
         .floating-add-btn {
             position: fixed;
             bottom: 24px;
-            right: 24px;
+            right: 44px;
             background-color: var(--vscode-button-background);
             color: var(--vscode-button-foreground);
             border: none;
@@ -469,7 +469,7 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
                 isQuoted: envData.globalQuotes || false
             });
             renderVariables();
-            scheduleAutoSave();
+            // Don't auto-save when adding empty variable - wait for user input
         }
 
         function toggleGlobalQuotes(useQuotes) {
@@ -539,7 +539,15 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
         function updateVariable(index, field, value) {
             if (envData.variables[index]) {
                 envData.variables[index][field] = value;
-                scheduleAutoSave();
+
+                // Only auto-save if the variable has a key (meaningful content)
+                const hasValidKey = envData.variables.some(variable =>
+                    variable.key && variable.key.trim().length > 0
+                );
+
+                if (hasValidKey) {
+                    scheduleAutoSave();
+                }
             }
         }
 
