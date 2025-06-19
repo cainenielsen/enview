@@ -1,6 +1,6 @@
 {
-  "name": "enview---environment-file-viewer",
-  "displayName": "EnView - Environment File Viewer",
+  "name": "enview",
+  "displayName": "Enview - Environment File Viewer",
   "description": "A VS Code extension for visually managing .env files with an intuitive interface",
   "version": "0.0.1",
   "license": "MIT",

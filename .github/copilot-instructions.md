@@ -1,4 +1,4 @@
-# Copilot Instructions for EnView Extension
+# Copilot Instructions for Enview Extension
 
 <!-- Use this file to provide workspace-specific custom instructions to Copilot. For more details, visit https://code.visualstudio.com/docs/copilot/copilot-customization#_use-a-githubcopilotinstructionsmd-file -->
 
@@ -6,7 +6,9 @@ This is a VS Code extension project. Please use the get_vscode_api with a query 
 
 ## Project Overview
 
-EnView is a VS Code extension that provides a visual interface for managing .env files. The extension includes:
+## Project Overview
+
+Enview is a VS Code extension that provides a visual interface for managing .env files. The extension includes:
 
 1. **Preview Button**: Adds a preview button to .env files for opening the visual editor
 2. **Visual Interface**: A custom webview panel for editing environment variables

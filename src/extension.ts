@@ -9,7 +9,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log('EnView - Environment File Viewer is now active!');
+	console.log('Enview - Environment File Viewer is now active!');
 
 	// Register the custom editor provider for .env files
 	const envEditorProvider = new EnvEditorProvider(context);

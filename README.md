@@ -1,4 +1,4 @@
-# EnView - Environment File Viewer
+# Enview - Environment File Viewer
 
 A VS Code extension that provides a visual interface for managing .env files with an intuitive, user-friendly editor.
 
@@ -203,7 +203,7 @@ This extension contributes the following settings:
 
 ### 0.0.1
 
-Initial release of EnView:
+Initial release of Enview:
 
 - Visual environment file editor
 - Support for multiple .env file patterns
