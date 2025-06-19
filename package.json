@@ -3,15 +3,16 @@
   "displayName": "EnView - Environment File Viewer",
   "description": "A VS Code extension for visually managing .env files with an intuitive interface",
   "version": "0.0.1",
-  "publisher": "your-publisher-name",
+  "license": "MIT",
+  "publisher": "cainenielsen",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/enview-extension.git"
+    "url": "https://github.com/cainenielsen/enview.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/enview-extension/issues"
+    "url": "https://github.com/cainenielsen/enview/issues"
   },
-  "homepage": "https://github.com/your-username/enview-extension#readme",
+  "homepage": "https://github.com/cainenielsen/enview#readme",
   "engines": {
     "vscode": "^1.101.0"
   },
