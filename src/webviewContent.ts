@@ -177,15 +177,15 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
         .variable-fields {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 20px;
             width: 100%;
             max-width: 100%;
         }
 
         .variable-row {
             display: grid;
-            grid-template-columns: 1fr 2fr auto;
-            gap: 16px;
+            grid-template-columns: 1fr 2fr auto auto;
+            gap: 20px;
             align-items: end;
         }
 
@@ -197,7 +197,7 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
         .field-group label {
             font-size: 11px;
             color: var(--vscode-descriptionForeground);
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -248,6 +248,51 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
 
         .delete-btn:hover {
             background-color: #e73c3c;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .toggle-btn {
+            border: none;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 2px;
+            font-size: 11px;
+            font-family: var(--vscode-font-family);
+            font-weight: normal;
+            height: 36px; /* Match input height */
+            white-space: nowrap;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-disable {
+            background-color: var(--vscode-button-secondaryBackground);
+            color: var(--vscode-button-secondaryForeground);
+        }
+
+        .btn-disable:hover {
+            background-color: var(--vscode-button-secondaryHoverBackground);
+        }
+
+        .btn-enable {
+            background-color: var(--vscode-button-background);
+            color: var(--vscode-button-foreground);
+        }
+
+        .btn-enable:hover {
+            background-color: var(--vscode-button-hoverBackground);
+        }
+
+        /* Disabled variable styles */
+        .variable-item.disabled {
+            opacity: 0.6;
+        }
+
+        .variable-item.disabled label {
+            color: var(--vscode-descriptionForeground);
         }
 
         .empty-state {
@@ -508,7 +553,7 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
             container.innerHTML = \`
                 <div class="variable-list">
                     \${envData.variables.map((variable, index) => \`
-                        <div class="variable-item">
+                        <div class="variable-item \${variable.disabled ? 'disabled' : ''}">
                             <div class="variable-fields">
                                 <div class="variable-row">
                                     <div class="field-group">
@@ -525,13 +570,21 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
                                     </div>
                                     <div class="field-group">
                                         <label>&nbsp;</label>
+                                        <button class="toggle-btn \${variable.disabled ? 'btn-enable' : 'btn-disable'}"
+                                                onclick="toggleVariable(\${index})"
+                                                title="\${variable.disabled ? 'Enable variable' : 'Disable variable'}">
+                                            \${variable.disabled ? 'Enable' : 'Disable'}
+                                        </button>
+                                    </div>
+                                    <div class="field-group">
+                                        <label>&nbsp;</label>
                                         <button class="delete-btn" onclick="showDeleteConfirm(\${index}, '\${variable.key}')">
                                             Delete
                                         </button>
                                     </div>
                                 </div>
                                 <div class="field-group">
-                                    <label>Description (optional)</label>
+                                    <label>Description</label>
                                     <textarea oninput="updateVariable(\${index}, 'description', this.value); autoResize(this)"
                                               placeholder="Describe what this variable is used for...">\${variable.description || ''}</textarea>
                                 </div>
@@ -683,6 +736,14 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
                 if (hasValidKey) {
                     scheduleAutoSave();
                 }
+            }
+        }
+
+        function toggleVariable(index) {
+            if (envData.variables[index]) {
+                envData.variables[index].disabled = !envData.variables[index].disabled;
+                renderVariables();
+                scheduleAutoSave();
             }
         }
 

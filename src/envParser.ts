@@ -3,6 +3,7 @@ export interface EnvVariable {
   value: string;
   description?: string;
   isQuoted?: boolean;
+  disabled?: boolean;
 }
 
 export interface ParseError {
@@ -42,10 +43,38 @@ export class EnvParser {
         continue;
       }
 
-      // Handle comments (potential descriptions)
+      // Handle comments (potential descriptions or disabled variables)
       if (line.startsWith('#')) {
         const comment = line.substring(1).trim();
-        if (comment && !comment.toLowerCase().includes('env') && !comment.includes('=')) {
+
+        // Check if this is a commented-out variable assignment
+        let disabledMatch = comment.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/);
+        let disabledFormat: 'equals' | 'colon' = 'equals';
+
+        if (!disabledMatch) {
+          disabledMatch = comment.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*:\s*"?([^"]*)"?$/);
+          disabledFormat = 'colon';
+        }
+
+        if (disabledMatch) {
+          // This is a disabled variable
+          const [, key, value] = disabledMatch;
+          const cleanValue = this.cleanValue(value);
+          const isQuoted = this.isValueQuoted(value);
+
+          variables.push({
+            key: key.trim(),
+            value: cleanValue,
+            description: currentDescription,
+            isQuoted,
+            disabled: true
+          });
+
+          currentDescription = undefined;
+          descriptionLines = [];
+          format = disabledFormat;
+        } else if (comment && !comment.toLowerCase().includes('env') && !comment.includes('=')) {
+          // This is a regular comment/description
           descriptionLines.push(comment);
         }
         continue;
@@ -134,16 +163,24 @@ export class EnvParser {
       }
 
       // Format the variable assignment
+      let assignmentLine: string;
       if (envData.format === 'colon') {
         const quotedValue = variable.isQuoted || variable.value.includes(' ')
           ? `"${variable.value}"`
           : variable.value;
-        lines.push(`${variable.key}: ${quotedValue}`);
+        assignmentLine = `${variable.key}: ${quotedValue}`;
       } else {
         const quotedValue = variable.isQuoted || variable.value.includes(' ')
           ? `"${variable.value}"`
           : variable.value;
-        lines.push(`${variable.key}=${quotedValue}`);
+        assignmentLine = `${variable.key}=${quotedValue}`;
+      }
+
+      // Add # prefix if the variable is disabled
+      if (variable.disabled) {
+        lines.push(`# ${assignmentLine}`);
+      } else {
+        lines.push(assignmentLine);
       }
 
       // Add empty line after each variable for readability
