@@ -10,19 +10,22 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
     <style>
         body {
             font-family: var(--vscode-font-family);
-            padding: 16px;
+            padding: 20px;
             background-color: var(--vscode-editor-background);
             color: var(--vscode-editor-foreground);
             margin: 0;
             line-height: 1.4;
+            position: relative;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
 
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
-            padding-bottom: 12px;
+            margin-bottom: 28px;
+            padding-bottom: 16px;
             border-bottom: 1px solid var(--vscode-widget-border);
         }
 
@@ -33,10 +36,10 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
             color: var(--vscode-foreground);
         }
 
-        .controls {
+        .header-controls {
             display: flex;
-            gap: 8px;
             align-items: center;
+            gap: 16px;
         }
 
         .btn {
@@ -73,13 +76,18 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
             background-color: var(--vscode-errorBackground);
         }
 
+        .format-and-quotes {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
         .format-tabs {
             display: flex;
-            margin-bottom: 20px;
             background-color: var(--vscode-tab-inactiveBackground);
             border-radius: 4px;
             padding: 2px;
-            width: fit-content;
         }
 
         .format-tab {
@@ -104,67 +112,81 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
             background-color: var(--vscode-tab-hoverBackground);
         }
 
+        .quotes-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background-color: var(--vscode-tab-inactiveBackground);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--vscode-tab-inactiveForeground);
+            font-size: 13px;
+        }
+
+        .quotes-toggle:hover {
+            background-color: var(--vscode-tab-hoverBackground);
+        }
+
+        .quotes-toggle.active {
+            background-color: var(--vscode-tab-activeBackground);
+            color: var(--vscode-tab-activeForeground);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .quotes-toggle input[type="checkbox"] {
+            margin: 0;
+            opacity: 0;
+            position: absolute;
+        }
+
+        .quotes-toggle label {
+            font-size: 13px;
+            margin: 0;
+            cursor: pointer;
+            color: inherit;
+        }
+
         .variable-list {
-            max-height: 70vh;
+            overflow-x: hidden;
             overflow-y: auto;
+            padding-bottom: 80px; /* Space for floating button */
+            width: 100%;
+            max-width: 100%;
         }
 
         .variable-item {
-            padding: 12px 0;
+            padding: 20px;
             border-bottom: 1px solid var(--vscode-widget-border);
             transition: background-color 0.2s ease;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         .variable-item:hover {
             background-color: var(--vscode-list-hoverBackground);
-            margin: 0 -8px;
-            padding: 12px 8px;
-            border-radius: 3px;
+            border-radius: 4px;
         }
 
         .variable-item:last-child {
             border-bottom: none;
         }
 
-        .variable-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .variable-key {
-            font-weight: 600;
-            color: var(--vscode-symbolIcon-variableForeground);
-            font-family: var(--vscode-editor-font-family);
-            font-size: 14px;
-        }
-
-        .delete-btn {
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            background: none;
-            border: none;
-            color: var(--vscode-errorForeground);
-            cursor: pointer;
-            padding: 4px;
-            border-radius: 2px;
-            font-size: 12px;
-        }
-
-        .variable-item:hover .delete-btn {
-            opacity: 1;
-        }
-
-        .delete-btn:hover {
-            background-color: var(--vscode-errorBackground);
-        }
-
         .variable-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .variable-row {
             display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 12px;
-            align-items: start;
+            grid-template-columns: 1fr 2fr auto;
+            gap: 16px;
+            align-items: end;
         }
 
         .field-group {
@@ -175,7 +197,7 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
         .field-group label {
             font-size: 11px;
             color: var(--vscode-descriptionForeground);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -186,10 +208,13 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
             color: var(--vscode-input-foreground);
             border: 1px solid var(--vscode-input-border);
             border-radius: 2px;
-            padding: 6px 8px;
+            padding: 8px 10px;
             font-family: var(--vscode-editor-font-family);
             font-size: 13px;
             transition: border-color 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            height: 36px; /* Fixed height for inputs */
         }
 
         .field-group input:focus,
@@ -199,65 +224,66 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
         }
 
         .field-group textarea {
-            resize: vertical;
-            min-height: 50px;
-            grid-column: 1 / -1;
+            resize: none;
+            min-height: 20px;
+            height: auto;
+            line-height: 1.4;
+            overflow: hidden;
         }
 
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 6px;
+        .delete-btn {
+            background-color: #f14c4c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 2px;
+            font-size: 11px;
+            font-family: var(--vscode-font-family);
+            font-weight: normal;
+            height: 36px; /* Match input height */
+            white-space: nowrap;
+            transition: background-color 0.2s ease;
         }
 
-        .checkbox-group input[type="checkbox"] {
-            margin: 0;
-        }
-
-        .checkbox-group label {
-            font-size: 12px;
-            margin: 0;
-            text-transform: none;
-            letter-spacing: normal;
-            color: var(--vscode-foreground);
-        }
-
-        .add-variable {
-            margin-top: 24px;
-            text-align: center;
-            padding: 16px;
-            border: 1px dashed var(--vscode-widget-border);
-            border-radius: 4px;
+        .delete-btn:hover {
+            background-color: #e73c3c;
         }
 
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
+            padding: 80px 20px;
             color: var(--vscode-descriptionForeground);
         }
 
         .empty-state h2 {
             color: var(--vscode-foreground);
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
 
-        .auto-save-indicator {
-            font-size: 11px;
-            color: var(--vscode-descriptionForeground);
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        .floating-add-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background-color: var(--vscode-button-background);
+            color: var(--vscode-button-foreground);
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 13px;
+            font-family: var(--vscode-font-family);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+            z-index: 100;
         }
 
-        .auto-save-indicator.saving {
-            opacity: 1;
-            color: var(--vscode-notificationsInfoIcon-foreground);
-        }
-
-        .auto-save-indicator.saved {
-            opacity: 1;
-            color: var(--vscode-notificationsSuccessIcon-foreground);
+        .floating-add-btn:hover {
+            background-color: var(--vscode-button-hoverBackground);
         }
 
         .modal-overlay {
@@ -302,31 +328,34 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
 <body>
     <div class="header">
         <h1>Environment Variables</h1>
-        <div class="controls">
-            <div class="auto-save-indicator" id="autoSaveIndicator">Auto-saved</div>
-            <button class="btn btn-secondary" onclick="addVariable()">Add Variable</button>
-        </div>
     </div>
 
-    <div class="format-tabs">
-        <button class="format-tab active" data-format="equals" onclick="changeFormat('equals')">
-            KEY=value
-        </button>
-        <button class="format-tab" data-format="colon" onclick="changeFormat('colon')">
-            KEY: "value"
-        </button>
+    <div class="format-and-quotes">
+        <div class="format-tabs">
+            <button class="format-tab active" data-format="equals" onclick="changeFormat('equals')">
+                KEY=value
+            </button>
+            <button class="format-tab" data-format="colon" onclick="changeFormat('colon')">
+                KEY: "value"
+            </button>
+        </div>
+
+        <div class="quotes-toggle" onclick="toggleQuotesClick()">
+            <input type="checkbox" id="global-quotes" onchange="toggleGlobalQuotes(this.checked)">
+            <label for="global-quotes">Use quotes for all values</label>
+        </div>
     </div>
 
     <div id="variables-container">
         <div class="empty-state">
             <h2>No Environment Variables</h2>
-            <p>Click "Add Variable" to get started</p>
+            <p>Click the + button to get started</p>
         </div>
     </div>
 
-    <div class="add-variable">
-        <button class="btn btn-secondary" onclick="addVariable()">Add Another Variable</button>
-    </div>
+    <button class="floating-add-btn" onclick="addVariable()" title="Add Variable">
+        + Add Variable
+    </button>
 
     <div id="confirmModal" class="modal-overlay" style="display: none;">
         <div class="modal">
@@ -341,33 +370,16 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
 
     <script>
         const vscode = acquireVsCodeApi();
-        let envData = { variables: [], format: 'equals' };
+        let envData = { variables: [], format: 'equals', globalQuotes: false };
         let autoSaveTimeout;
         let pendingDeleteIndex = -1;
 
         function scheduleAutoSave() {
             clearTimeout(autoSaveTimeout);
-            showSavingIndicator();
 
             autoSaveTimeout = setTimeout(() => {
                 saveFile(true);
             }, 500);
-        }
-
-        function showSavingIndicator() {
-            const indicator = document.getElementById('autoSaveIndicator');
-            indicator.textContent = 'Saving...';
-            indicator.className = 'auto-save-indicator saving';
-        }
-
-        function showSavedIndicator() {
-            const indicator = document.getElementById('autoSaveIndicator');
-            indicator.textContent = 'Auto-saved';
-            indicator.className = 'auto-save-indicator saved';
-
-            setTimeout(() => {
-                indicator.className = 'auto-save-indicator';
-            }, 2000);
         }
 
         window.addEventListener('message', event => {
@@ -375,11 +387,12 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
             switch (message.type) {
                 case 'update':
                     envData = message.data;
+                    if (!envData.hasOwnProperty('globalQuotes')) {
+                        envData.globalQuotes = false;
+                    }
                     renderVariables();
                     updateFormatTabs();
-                    break;
-                case 'saved':
-                    showSavedIndicator();
+                    updateGlobalQuotes();
                     break;
             }
         });
@@ -391,7 +404,7 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
                 container.innerHTML = \`
                     <div class="empty-state">
                         <h2>No Environment Variables</h2>
-                        <p>Click "Add Variable" to get started</p>
+                        <p>Click the + button to get started</p>
                     </div>
                 \`;
                 return;
@@ -401,34 +414,30 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
                 <div class="variable-list">
                     \${envData.variables.map((variable, index) => \`
                         <div class="variable-item">
-                            <div class="variable-header">
-                                <div class="variable-key">\${variable.key || 'NEW_VARIABLE'}</div>
-                                <button class="delete-btn" onclick="showDeleteConfirm(\${index}, '\${variable.key}')">
-                                    ×
-                                </button>
-                            </div>
                             <div class="variable-fields">
-                                <div class="field-group">
-                                    <label>Variable Name</label>
-                                    <input type="text" value="\${variable.key || ''}"
-                                           oninput="updateVariable(\${index}, 'key', this.value)"
-                                           placeholder="VARIABLE_NAME">
-                                </div>
-                                <div class="field-group">
-                                    <label>Value</label>
-                                    <input type="text" value="\${variable.value || ''}"
-                                           oninput="updateVariable(\${index}, 'value', this.value)"
-                                           placeholder="variable value">
-                                    <div class="checkbox-group">
-                                        <input type="checkbox" id="quoted-\${index}"
-                                               \${variable.isQuoted ? 'checked' : ''}
-                                               onchange="updateVariable(\${index}, 'isQuoted', this.checked)">
-                                        <label for="quoted-\${index}">Use quotes</label>
+                                <div class="variable-row">
+                                    <div class="field-group">
+                                        <label>Variable Name</label>
+                                        <input type="text" value="\${variable.key || ''}"
+                                               oninput="updateVariable(\${index}, 'key', this.value)"
+                                               placeholder="VARIABLE_NAME">
+                                    </div>
+                                    <div class="field-group">
+                                        <label>Value</label>
+                                        <input type="text" value="\${variable.value || ''}"
+                                               oninput="updateVariable(\${index}, 'value', this.value)"
+                                               placeholder="variable value">
+                                    </div>
+                                    <div class="field-group">
+                                        <label>&nbsp;</label>
+                                        <button class="delete-btn" onclick="showDeleteConfirm(\${index}, '\${variable.key}')">
+                                            Delete
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="field-group">
                                     <label>Description (optional)</label>
-                                    <textarea oninput="updateVariable(\${index}, 'description', this.value)"
+                                    <textarea oninput="updateVariable(\${index}, 'description', this.value); autoResize(this)"
                                               placeholder="Describe what this variable is used for...">\${variable.description || ''}</textarea>
                                 </div>
                             </div>
@@ -436,6 +445,9 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
                     \`).join('')}
                 </div>
             \`;
+
+            // Auto-resize all textareas after rendering
+            setTimeout(resizeAllTextareas, 0);
         }
 
         function updateFormatTabs() {
@@ -454,10 +466,46 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
                 key: '',
                 value: '',
                 description: '',
-                isQuoted: false
+                isQuoted: envData.globalQuotes || false
             });
             renderVariables();
             scheduleAutoSave();
+        }
+
+        function toggleGlobalQuotes(useQuotes) {
+            envData.globalQuotes = useQuotes;
+            // Update all existing variables
+            envData.variables.forEach(variable => {
+                variable.isQuoted = useQuotes;
+            });
+            updateGlobalQuotes();
+            scheduleAutoSave();
+        }
+
+        function toggleQuotesClick() {
+            const checkbox = document.getElementById('global-quotes');
+            if (checkbox) {
+                checkbox.checked = !checkbox.checked;
+                toggleGlobalQuotes(checkbox.checked);
+            }
+        }
+
+        function updateGlobalQuotes() {
+            const checkbox = document.getElementById('global-quotes');
+            const toggleDiv = document.querySelector('.quotes-toggle');
+            if (checkbox && toggleDiv) {
+                checkbox.checked = envData.globalQuotes || false;
+                if (envData.globalQuotes) {
+                    toggleDiv.classList.add('active');
+                } else {
+                    toggleDiv.classList.remove('active');
+                }
+            }
+        }
+
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
         }
 
         function showDeleteConfirm(index, variableName) {
@@ -509,6 +557,10 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
             });
         }
 
+        function resizeAllTextareas() {
+            document.querySelectorAll('textarea').forEach(autoResize);
+        }
+
         document.getElementById('confirmModal').addEventListener('click', (e) => {
             if (e.target.classList.contains('modal-overlay')) {
                 closeConfirmModal();
@@ -522,6 +574,16 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
         });
 
         vscode.postMessage({ type: 'ready' });
+
+        // Auto-resize textareas after rendering
+        const observer = new MutationObserver(() => {
+            setTimeout(resizeAllTextareas, 0);
+        });
+
+        observer.observe(document.getElementById('variables-container'), {
+            childList: true,
+            subtree: true
+        });
     </script>
 </body>
 </html>`;

@@ -3,6 +3,8 @@ import { EnvParser } from './envParser';
 import { getWebviewContent } from './webviewContent';
 
 export class EnvEditorProvider implements vscode.CustomTextEditorProvider {
+  private isUpdatingDocument = false;
+
   constructor(private readonly context: vscode.ExtensionContext) { }
 
   public async resolveCustomTextEditor(
@@ -28,9 +30,9 @@ export class EnvEditorProvider implements vscode.CustomTextEditorProvider {
       });
     };
 
-    // Listen for changes in the document
+    // Listen for changes in the document (but ignore our own updates)
     const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(e => {
-      if (e.document.uri.toString() === document.uri.toString()) {
+      if (e.document.uri.toString() === document.uri.toString() && !this.isUpdatingDocument) {
         updateWebview();
       }
     });
@@ -76,6 +78,9 @@ export class EnvEditorProvider implements vscode.CustomTextEditorProvider {
     isAutoSave: boolean = false
   ): Promise<void> {
     try {
+      // Set flag to prevent refresh loop
+      this.isUpdatingDocument = true;
+
       const newContent = EnvParser.serialize(envData);
 
       // Create a WorkspaceEdit to update the document
@@ -93,21 +98,14 @@ export class EnvEditorProvider implements vscode.CustomTextEditorProvider {
       if (success) {
         // Save the document
         await document.save();
-
-        // Notify the webview that save was successful
-        webviewPanel.webview.postMessage({
-          type: 'saveComplete'
-        });
-
-        // Show success message only for manual saves
-        if (!isAutoSave) {
-          vscode.window.showInformationMessage('Environment file updated successfully!');
-        }
       } else {
         vscode.window.showErrorMessage('Failed to update environment file');
       }
     } catch (error) {
       vscode.window.showErrorMessage(`Error saving file: ${error}`);
+    } finally {
+      // Reset flag to allow external changes to trigger updates
+      this.isUpdatingDocument = false;
     }
   }
 }
