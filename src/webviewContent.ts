@@ -323,6 +323,91 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
             gap: 8px;
             justify-content: flex-end;
         }
+
+        /* Debug View Styles */
+        .debug-view {
+            padding: 20px;
+            background-color: var(--vscode-inputValidation-errorBackground);
+            border: 1px solid var(--vscode-inputValidation-errorBorder);
+            border-radius: 4px;
+            margin: 0 20px 20px 20px;
+        }
+
+        .debug-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .debug-icon {
+            font-size: 20px;
+            color: var(--vscode-inputValidation-errorForeground);
+        }
+
+        .debug-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--vscode-inputValidation-errorForeground);
+            margin: 0;
+        }
+
+        .debug-subtitle {
+            font-size: 13px;
+            color: var(--vscode-descriptionForeground);
+            margin: 4px 0 0 0;
+        }
+
+        .error-list {
+            margin: 16px 0;
+        }
+
+        .error-item {
+            background-color: var(--vscode-editor-background);
+            border: 1px solid var(--vscode-widget-border);
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .error-line-number {
+            font-size: 11px;
+            color: var(--vscode-descriptionForeground);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .error-content {
+            font-family: var(--vscode-editor-font-family);
+            background-color: var(--vscode-textCodeBlock-background);
+            padding: 8px 10px;
+            border-radius: 2px;
+            font-size: 13px;
+            margin: 6px 0;
+            border-left: 3px solid var(--vscode-inputValidation-errorBorder);
+        }
+
+        .error-message {
+            font-size: 13px;
+            color: var(--vscode-inputValidation-errorForeground);
+            margin: 6px 0 0 0;
+        }
+
+        .debug-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-open-raw {
+            background-color: var(--vscode-button-background);
+            color: var(--vscode-button-foreground);
+        }
+
+        .btn-open-raw:hover {
+            background-color: var(--vscode-button-hoverBackground);
+        }
     </style>
 </head>
 <body>
@@ -400,6 +485,16 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
         function renderVariables() {
             const container = document.getElementById('variables-container');
 
+            // Show debug view if there are parsing errors
+            if (envData.hasErrors && envData.parseErrors && envData.parseErrors.length > 0) {
+                renderDebugView(container);
+                return;
+            }
+
+            // Show/hide normal controls
+            document.querySelector('.format-and-quotes').style.display = 'flex';
+            document.querySelector('.floating-add-btn').style.display = 'flex';
+
             if (envData.variables.length === 0) {
                 container.innerHTML = \`
                     <div class="empty-state">
@@ -448,6 +543,46 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
 
             // Auto-resize all textareas after rendering
             setTimeout(resizeAllTextareas, 0);
+        }
+
+        function renderDebugView(container) {
+            const errorCount = envData.parseErrors.length;
+            const errorWord = errorCount === 1 ? 'error' : 'errors';
+
+            container.innerHTML = \`
+                <div class="debug-view">
+                    <div class="debug-header">
+                        <span class="debug-icon">⚠️</span>
+                        <div>
+                            <h2 class="debug-title">Parsing Error</h2>
+                            <p class="debug-subtitle">Found \${errorCount} \${errorWord} in environment file</p>
+                        </div>
+                    </div>
+
+                    <div class="error-list">
+                        \${envData.parseErrors.map(error => \`
+                            <div class="error-item">
+                                <div class="error-line-number">Line \${error.line}</div>
+                                <div class="error-content">\${error.content}</div>
+                                <div class="error-message">\${error.error}</div>
+                            </div>
+                        \`).join('')}
+                    </div>
+
+                    <div class="debug-actions">
+                        <button class="btn btn-open-raw" onclick="openRawFile()">
+                            Open Raw File
+                        </button>
+                        <button class="btn btn-secondary" onclick="retryParsing()">
+                            Retry Parsing
+                        </button>
+                    </div>
+                </div>
+            \`;
+
+            // Hide format controls and add button when in debug mode
+            document.querySelector('.format-and-quotes').style.display = 'none';
+            document.querySelector('.floating-add-btn').style.display = 'none';
         }
 
         function updateFormatTabs() {
@@ -580,6 +715,15 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
                 closeConfirmModal();
             }
         });
+
+        // Debug view action handlers
+        window.openRawFile = function() {
+            vscode.postMessage({ type: 'openRawFile' });
+        };
+
+        window.retryParsing = function() {
+            vscode.postMessage({ type: 'retryParsing' });
+        };
 
         vscode.postMessage({ type: 'ready' });
 

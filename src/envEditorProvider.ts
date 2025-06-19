@@ -56,6 +56,14 @@ export class EnvEditorProvider implements vscode.CustomTextEditorProvider {
             const previewUri = vscode.Uri.parse(`enview-preview:${document.fileName}`);
             await vscode.commands.executeCommand('vscode.openWith', previewUri, 'default');
             break;
+          case 'openRawFile':
+            // Open the file in the default text editor
+            await vscode.commands.executeCommand('vscode.openWith', document.uri, 'default');
+            break;
+          case 'retryParsing':
+            // Re-parse the document and update the webview
+            updateWebview();
+            break;
         }
       },
       null,

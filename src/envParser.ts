@@ -5,15 +5,24 @@ export interface EnvVariable {
   isQuoted?: boolean;
 }
 
+export interface ParseError {
+  line: number;
+  content: string;
+  error: string;
+}
+
 export interface EnvData {
   variables: EnvVariable[];
   format: 'equals' | 'colon'; // var=val vs var: "val"
+  parseErrors?: ParseError[];
+  hasErrors?: boolean;
 }
 
 export class EnvParser {
   static parse(content: string): EnvData {
     const lines = content.split('\n');
     const variables: EnvVariable[] = [];
+    const parseErrors: ParseError[] = [];
     let format: 'equals' | 'colon' = 'equals';
     let currentDescription: string | undefined;
 
@@ -59,10 +68,37 @@ export class EnvParser {
         });
 
         currentDescription = undefined;
+      } else {
+        // Line couldn't be parsed - add to errors
+        if (!line.startsWith('#') && line.trim() !== '') {
+          parseErrors.push({
+            line: i + 1,
+            content: lines[i], // Keep original line with whitespace
+            error: this.getParseErrorMessage(line)
+          });
+        }
       }
     }
 
-    return { variables, format };
+    return { 
+      variables, 
+      format, 
+      parseErrors,
+      hasErrors: parseErrors.length > 0
+    };
+  }
+
+  private static getParseErrorMessage(line: string): string {
+    if (line.includes('=') && !line.match(/^[A-Za-z_][A-Za-z0-9_]*\s*=/)) {
+      return 'Invalid variable name. Variable names must start with a letter or underscore and contain only letters, numbers, and underscores.';
+    }
+    if (line.includes(':') && !line.match(/^[A-Za-z_][A-Za-z0-9_]*\s*:/)) {
+      return 'Invalid variable name for colon format. Variable names must start with a letter or underscore.';
+    }
+    if (!line.includes('=') && !line.includes(':')) {
+      return 'Missing assignment operator. Expected format: VARIABLE=value or VARIABLE: "value"';
+    }
+    return 'Invalid syntax. Expected format: VARIABLE=value or VARIABLE: "value"';
   }
 
   static serialize(envData: EnvData): string {
