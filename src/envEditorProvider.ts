@@ -40,7 +40,10 @@ export class EnvEditorProvider implements vscode.CustomTextEditorProvider {
       async message => {
         switch (message.type) {
           case 'save':
-            await this.saveDocument(document, message.data);
+            await this.saveDocument(document, message.data, webviewPanel, false);
+            break;
+          case 'autoSave':
+            await this.saveDocument(document, message.data, webviewPanel, true);
             break;
           case 'ready':
             updateWebview();
@@ -66,7 +69,12 @@ export class EnvEditorProvider implements vscode.CustomTextEditorProvider {
     updateWebview();
   }
 
-  private async saveDocument(document: vscode.TextDocument, envData: any): Promise<void> {
+  private async saveDocument(
+    document: vscode.TextDocument,
+    envData: any,
+    webviewPanel: vscode.WebviewPanel,
+    isAutoSave: boolean = false
+  ): Promise<void> {
     try {
       const newContent = EnvParser.serialize(envData);
 
@@ -85,7 +93,16 @@ export class EnvEditorProvider implements vscode.CustomTextEditorProvider {
       if (success) {
         // Save the document
         await document.save();
-        vscode.window.showInformationMessage('Environment file updated successfully!');
+
+        // Notify the webview that save was successful
+        webviewPanel.webview.postMessage({
+          type: 'saveComplete'
+        });
+
+        // Show success message only for manual saves
+        if (!isAutoSave) {
+          vscode.window.showInformationMessage('Environment file updated successfully!');
+        }
       } else {
         vscode.window.showErrorMessage('Failed to update environment file');
       }
