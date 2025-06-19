@@ -25,7 +25,7 @@
     "commands": [
       {
         "command": "enview.openPreview",
-        "title": "Open Environment File Preview",
+        "title": "Open Environment File Editor [Enview]",
         "icon": "$(open-preview)"
       }
     ],

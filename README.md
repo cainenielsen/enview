@@ -2,7 +2,7 @@
 
 Transform your `.env` file management with a beautiful, intuitive visual editor for VS Code.
 
-![Enview Editor](https://via.placeholder.com/800x450/0078d4/ffffff?text=Enview+Visual+Editor)
+![Enview Editor](assets/homepage.png)
 
 ## ✨ Features
 
@@ -10,13 +10,13 @@ Transform your `.env` file management with a beautiful, intuitive visual editor 
 
 Replace messy text editing with a clean, organized interface that makes managing environment variables a breeze.
 
-![Visual Interface](https://via.placeholder.com/600x350/20232a/61dafb?text=Clean+Visual+Interface)
+![Visual Interface](assets/ui.png)
 
 ### 🚀 Smart Parsing & Error Handling
 
 Automatically detects syntax errors and provides helpful debugging information with clear error messages and line highlighting.
 
-![Error Handling](https://via.placeholder.com/600x300/ff6b6b/ffffff?text=Smart+Error+Detection)
+![Error Handling](assets/errors.png)
 
 ### 💡 Intelligent Features
 
@@ -26,7 +26,7 @@ Automatically detects syntax errors and provides helpful debugging information w
 - **Disable/Enable Variables**: Comment out variables without deleting them
 - **Multi-line Descriptions**: Full support for detailed variable documentation
 
-![Feature Showcase](https://via.placeholder.com/600x400/4ecdc4/ffffff?text=Advanced+Features)
+![Feature Showcase](assets/features.png)
 
 ### 📁 Universal File Support
 
@@ -47,7 +47,7 @@ Works seamlessly with all common environment file patterns:
 3. **Click** the preview button (👁️) in the editor toolbar
 4. **Start editing** with the beautiful visual interface!
 
-![Quick Start](https://via.placeholder.com/700x400/6c5ce7/ffffff?text=One+Click+Setup)
+![Preview](assets/preview.png)
 
 ## 🎯 Why Choose Enview?
 
