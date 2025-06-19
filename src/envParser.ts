@@ -25,13 +25,20 @@ export class EnvParser {
     const parseErrors: ParseError[] = [];
     let format: 'equals' | 'colon' = 'equals';
     let currentDescription: string | undefined;
+    let descriptionLines: string[] = [];
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
 
       // Skip empty lines
       if (!line) {
-        currentDescription = undefined;
+        // If we have accumulated description lines, join them
+        if (descriptionLines.length > 0) {
+          currentDescription = descriptionLines.join('\n');
+          descriptionLines = [];
+        } else {
+          currentDescription = undefined;
+        }
         continue;
       }
 
@@ -39,9 +46,15 @@ export class EnvParser {
       if (line.startsWith('#')) {
         const comment = line.substring(1).trim();
         if (comment && !comment.toLowerCase().includes('env') && !comment.includes('=')) {
-          currentDescription = comment;
+          descriptionLines.push(comment);
         }
         continue;
+      }
+
+      // If we reach a variable assignment, finalize any accumulated description
+      if (descriptionLines.length > 0) {
+        currentDescription = descriptionLines.join('\n');
+        descriptionLines = [];
       }
 
       // Parse variable assignments
@@ -68,6 +81,7 @@ export class EnvParser {
         });
 
         currentDescription = undefined;
+        descriptionLines = [];
       } else {
         // Line couldn't be parsed - add to errors
         if (!line.startsWith('#') && line.trim() !== '') {
@@ -80,9 +94,9 @@ export class EnvParser {
       }
     }
 
-    return { 
-      variables, 
-      format, 
+    return {
+      variables,
+      format,
       parseErrors,
       hasErrors: parseErrors.length > 0
     };
@@ -112,7 +126,11 @@ export class EnvParser {
     for (const variable of validVariables) {
       // Add description as comment if provided
       if (variable.description) {
-        lines.push(`# ${variable.description}`);
+        // Handle multi-line descriptions by adding # to each line
+        const descriptionLines = variable.description.split('\n');
+        for (const line of descriptionLines) {
+          lines.push(`# ${line}`);
+        }
       }
 
       // Format the variable assignment
