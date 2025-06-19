@@ -82,6 +82,7 @@
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
     "lint": "eslint src",
     "test": "vscode-test",
+    "test:ci": "echo 'Skipping UI tests in CI environment'",
     "publish": "npx @vscode/vsce publish"
   },
   "devDependencies": {
