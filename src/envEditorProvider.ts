@@ -104,8 +104,10 @@ export class EnvEditorProvider implements vscode.CustomTextEditorProvider {
       const success = await vscode.workspace.applyEdit(edit);
 
       if (success) {
-        // Save the document
-        await document.save();
+        // Only save explicitly for manual saves, not auto-saves
+        if (!isAutoSave) {
+          await document.save();
+        }
       } else {
         vscode.window.showErrorMessage('Failed to update environment file');
       }

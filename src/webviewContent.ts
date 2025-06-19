@@ -509,7 +509,7 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
 
             autoSaveTimeout = setTimeout(() => {
                 saveFile(true);
-            }, 500);
+            }, 1000);
         }
 
         window.addEventListener('message', event => {
