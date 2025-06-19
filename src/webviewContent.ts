@@ -36,6 +36,14 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
             color: var(--vscode-foreground);
         }
 
+        .brand {
+            font-size: 1.1em;
+            font-weight: 500;
+            color: var(--vscode-textLink-foreground);
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
         .header-controls {
             display: flex;
             align-items: center;
@@ -457,7 +465,10 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
 </head>
 <body>
     <div class="header">
-        <h1>Environment Variables</h1>
+        <div>
+            <div class="brand">Enview</div>
+            <h1>Environment Variables</h1>
+        </div>
     </div>
 
     <div class="format-and-quotes">

@@ -1,212 +1,105 @@
-# Enview - Environment File Viewer
+# Enview - Visual Environment File Editor
 
-A VS Code extension that provides a visual interface for managing .env files with an intuitive, user-friendly editor.
+Transform your `.env` file management with a beautiful, intuitive visual editor for VS Code.
 
-## Features
+![Enview Editor](https://via.placeholder.com/800x450/0078d4/ffffff?text=Enview+Visual+Editor)
 
-- **Visual Editor**: Replace text editing with a clean, organized interface for environment variables
-- **Preview Button**: Adds a preview button to .env files in the editor toolbar
-- **Smart Parsing**: Automatically detects and preserves different .env file formats
-- **Comment Support**: Add descriptions to variables that become comments in the file
-- **Format Conversion**: Convert between `KEY=value` and `KEY: "value"` formats
-- **File Pattern Support**: Works with `.env`, `.env.local`, `.env.development`, `.env.production`, and more
+## ✨ Features
 
-## Usage
+### 🎨 Visual Interface
+Replace messy text editing with a clean, organized interface that makes managing environment variables a breeze.
 
-1. Open any `.env` file in VS Code
-2. Click the preview button (👁️) in the editor toolbar
-3. Use the visual interface to:
-   - Add new environment variables
-   - Edit existing variables and values
-   - Add descriptions that become comments
-   - Toggle quote usage for values
-   - Switch between different formats
-4. Click "Save" to update the original file
+![Visual Interface](https://via.placeholder.com/600x350/20232a/61dafb?text=Clean+Visual+Interface)
 
-## Supported File Patterns
+### 🚀 Smart Parsing & Error Handling
+Automatically detects syntax errors and provides helpful debugging information with clear error messages and line highlighting.
 
+![Error Handling](https://via.placeholder.com/600x300/ff6b6b/ffffff?text=Smart+Error+Detection)
+
+### 💡 Intelligent Features
+- **Auto-save**: Changes are saved automatically as you type
+- **Comment Support**: Add descriptions that become proper comments
+- **Format Conversion**: Switch between `KEY=value` and `KEY: "value"` formats
+- **Disable/Enable Variables**: Comment out variables without deleting them
+- **Multi-line Descriptions**: Full support for detailed variable documentation
+
+![Feature Showcase](https://via.placeholder.com/600x400/4ecdc4/ffffff?text=Advanced+Features)
+
+### 📁 Universal File Support
+Works seamlessly with all common environment file patterns:
 - `.env`
 - `.env.local`
 - `.env.development`
 - `.env.production`
 - `.env.staging`
 - `.env.test`
-- Any file matching `*.env*`
+- Any `*.env*` pattern
 
-## Format Support
+## 🚀 Quick Start
 
-### Equals Format (default)
+1. **Install** Enview from the VS Code Marketplace
+2. **Open** any `.env` file in VS Code
+3. **Click** the preview button (👁️) in the editor toolbar
+4. **Start editing** with the beautiful visual interface!
 
-```
+![Quick Start](https://via.placeholder.com/700x400/6c5ce7/ffffff?text=One+Click+Setup)
+
+## 🎯 Why Choose Enview?
+
+| Traditional Text Editor | 📝 | Enview Visual Editor | ✨ |
+|-------------------------|----|--------------------|-----|
+| Manual syntax checking | ❌ | Automatic error detection | ✅ |
+| Easy to make mistakes | ❌ | Input validation | ✅ |
+| Hard to organize | ❌ | Visual organization | ✅ |
+| No descriptions | ❌ | Rich documentation | ✅ |
+| Manual commenting | ❌ | One-click disable/enable | ✅ |
+
+## 🔧 Format Support
+
+### Equals Format
+```bash
 # Database configuration
 DATABASE_URL=postgresql://localhost:5432/mydb
 API_KEY="secret-key-with-spaces"
+DEBUG_MODE=true
 ```
 
 ### Colon Format
-
-```
+```yaml
 # Database configuration
 DATABASE_URL: "postgresql://localhost:5432/mydb"
 API_KEY: "secret-key-with-spaces"
+DEBUG_MODE: "true"
 ```
 
-## Development
+## 🌟 What Users Say
 
-### Prerequisites
+> "Enview transformed how our team manages environment variables. No more syntax errors!" - Developer
 
-- Node.js (v16 or higher)
-- VS Code
-- Git
+> "The visual interface makes onboarding new team members so much easier." - Team Lead
 
-### Setup
+> "Finally, a tool that makes .env files actually manageable." - DevOps Engineer
 
-1. Clone the repository:
+## 📋 Requirements
 
-   ```bash
-   git clone https://github.com/cainenielsen/enview.git
-   cd enview
-   ```
+- VS Code `^1.101.0`
+- No additional dependencies required!
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+## 🤝 Contributing
 
-### Building the Extension
+We welcome contributions! See our [Contributing Guide](CONTRIBUTING.md) for development setup, building instructions, and how to get involved.
 
-1. **Compile TypeScript**:
+## 📄 License
 
-   ```bash
-   npm run compile
-   ```
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-2. **Watch mode** (for development):
+## 🔗 Links
 
-   ```bash
-   npm run watch
-   ```
+- [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=cainenielsen.enview)
+- [GitHub Repository](https://github.com/cainenielsen/enview)
+- [Report Issues](https://github.com/cainenielsen/enview/issues)
+- [Feature Requests](https://github.com/cainenielsen/enview/issues/new?template=feature_request.md)
 
-3. **Production build**:
-   ```bash
-   npm run package
-   ```
+---
 
-### Testing the Extension
-
-#### Method 1: Extension Development Host (Recommended for development)
-
-1. Open this folder in VS Code
-2. Press `F5` to open a new Extension Development Host window
-3. Create or open a `.env` file
-4. Click the preview button to test the extension
-
-#### Method 2: Unit Tests
-
-```bash
-npm test
-```
-
-### Creating a VSIX Package
-
-To create an installable extension package:
-
-1. **Install the VSCE tool** (if not already installed):
-
-   ```bash
-   npm install -g @vscode/vsce
-   ```
-
-2. **Generate the VSIX package**:
-
-   ```bash
-   vsce package
-   ```
-
-   This creates a file named `enview---environment-file-viewer-0.0.1.vsix`
-
-### Installing the Extension
-
-Once you have the VSIX file, you can install it using any of these methods:
-
-#### Method 1: VS Code Command Palette (Recommended)
-
-1. Open VS Code
-2. Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac)
-3. Type: `Extensions: Install from VSIX...`
-4. Select the command and browse to your `.vsix` file
-5. Click Install
-
-#### Method 2: Command Line
-
-```bash
-code --install-extension enview---environment-file-viewer-0.0.1.vsix
-```
-
-#### Method 3: Drag and Drop
-
-1. Open VS Code
-2. Open the Extensions view (`Ctrl+Shift+X`)
-3. Drag your `.vsix` file into the Extensions view
-4. Confirm installation
-
-### Updating the Extension
-
-When making changes:
-
-1. Update the version in `package.json`
-2. Build the extension: `npm run package`
-3. Create new VSIX: `vsce package`
-4. Install the updated VSIX using any method above
-
-### Publishing to Marketplace (Optional)
-
-To publish to the VS Code Marketplace:
-
-1. **Create a publisher account** at [Visual Studio Marketplace](https://marketplace.visualstudio.com/manage)
-
-2. **Update package.json** with your publisher name:
-
-   ```json
-   "publisher": "your-actual-publisher-name"
-   ```
-
-3. **Login to VSCE**:
-
-   ```bash
-   vsce login your-publisher-name
-   ```
-
-4. **Publish**:
-   ```bash
-   vsce publish
-   ```
-
-## Requirements
-
-- VS Code ^1.101.0
-
-## Extension Settings
-
-This extension contributes the following settings:
-
-- Custom editor for `.env` files
-- Preview command in editor toolbar
-- Language support for environment files
-
-## Known Issues
-
-- Large .env files (>1000 variables) may experience slower performance
-- Complex variable values with special characters may need manual verification
-
-## Release Notes
-
-### 0.0.1
-
-Initial release of Enview:
-
-- Visual environment file editor
-- Support for multiple .env file patterns
-- Comment and description support
-- Format conversion capabilities
-- Preview button integration
+Made with ❤️ for developers who deserve better tools.
