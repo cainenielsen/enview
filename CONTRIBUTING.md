@@ -13,12 +13,14 @@ Thank you for your interest in contributing to Enview! This guide will help you 
 ### Getting Started
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/cainenielsen/enview.git
    cd enview
    ```
 
 2. **Install dependencies**:
+
    ```bash
    npm install
    ```
@@ -49,6 +51,7 @@ Thank you for your interest in contributing to Enview! This guide will help you 
 ## 🧪 Testing
 
 ### Unit Tests
+
 ```bash
 npm test
 ```
@@ -56,6 +59,7 @@ npm test
 ### Manual Testing
 
 1. **Extension Development Host** (Recommended):
+
    - Open this folder in VS Code
    - Press `F5` to open Extension Development Host
    - Create/open a `.env` file
@@ -111,7 +115,7 @@ interface EnvVariable {
 
 interface EnvData {
   variables: EnvVariable[];
-  format: 'equals' | 'colon';
+  format: "equals" | "colon";
   parseErrors?: ParseError[];
   hasErrors?: boolean;
 }
@@ -139,6 +143,7 @@ The webview communicates with the extension through these message types:
 ### Commit Messages
 
 Use conventional commits:
+
 - `feat:` - New features
 - `fix:` - Bug fixes
 - `docs:` - Documentation changes
@@ -177,9 +182,27 @@ The project includes debug configurations:
 
 ## 🚀 Release Process
 
-## 🚀 Release Process
+### Quick Release (Recommended)
 
-### Automatic Publishing (Recommended)
+Use the convenient npm scripts for one-command releases:
+
+```bash
+# For bug fixes
+npm run release:patch
+
+# For new features  
+npm run release:minor
+
+# For breaking changes
+npm run release:major
+```
+
+These scripts automatically:
+- Bump the version in `package.json`
+- Create a git tag
+- Push changes and tags to trigger CI/CD
+
+### Manual Release Process
 
 The project uses GitHub Actions for automatic publishing to the VS Code Marketplace:
 
@@ -203,6 +226,7 @@ The project uses GitHub Actions for automatic publishing to the VS Code Marketpl
 If you need to publish manually:
 
 1. **Build the extension**:
+
    ```bash
    npm run package
    npm run build-vsix
@@ -220,14 +244,17 @@ If you need to publish manually:
 For maintainers setting up CI/CD:
 
 1. **Create VS Code Marketplace Publisher Account**:
+
    - Visit [Visual Studio Marketplace](https://marketplace.visualstudio.com/manage)
    - Note your publisher name
 
 2. **Generate Personal Access Token (PAT)**:
+
    - Go to [Azure DevOps](https://dev.azure.com/)
    - Create PAT with `Marketplace > Manage` permissions
 
 3. **Configure GitHub Repository**:
+
    - Add `VSCE_PAT` secret in GitHub repository settings
    - Update `publisher` field in `package.json`
 
@@ -240,6 +267,7 @@ See [CI/CD Setup Guide](.github/CI-CD-SETUP.md) for detailed instructions.
 ### Version Management
 
 Follow semantic versioning:
+
 - `patch` (1.0.1) - Bug fixes
 - `minor` (1.1.0) - New features (backward compatible)
 - `major` (2.0.0) - Breaking changes

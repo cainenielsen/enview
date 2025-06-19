@@ -7,16 +7,19 @@ Transform your `.env` file management with a beautiful, intuitive visual editor 
 ## ✨ Features
 
 ### 🎨 Visual Interface
+
 Replace messy text editing with a clean, organized interface that makes managing environment variables a breeze.
 
 ![Visual Interface](https://via.placeholder.com/600x350/20232a/61dafb?text=Clean+Visual+Interface)
 
 ### 🚀 Smart Parsing & Error Handling
+
 Automatically detects syntax errors and provides helpful debugging information with clear error messages and line highlighting.
 
 ![Error Handling](https://via.placeholder.com/600x300/ff6b6b/ffffff?text=Smart+Error+Detection)
 
 ### 💡 Intelligent Features
+
 - **Auto-save**: Changes are saved automatically as you type
 - **Comment Support**: Add descriptions that become proper comments
 - **Format Conversion**: Switch between `KEY=value` and `KEY: "value"` formats
@@ -26,7 +29,9 @@ Automatically detects syntax errors and provides helpful debugging information w
 ![Feature Showcase](https://via.placeholder.com/600x400/4ecdc4/ffffff?text=Advanced+Features)
 
 ### 📁 Universal File Support
+
 Works seamlessly with all common environment file patterns:
+
 - `.env`
 - `.env.local`
 - `.env.development`
@@ -46,17 +51,18 @@ Works seamlessly with all common environment file patterns:
 
 ## 🎯 Why Choose Enview?
 
-| Traditional Text Editor | 📝 | Enview Visual Editor | ✨ |
-|-------------------------|----|--------------------|-----|
-| Manual syntax checking | ❌ | Automatic error detection | ✅ |
-| Easy to make mistakes | ❌ | Input validation | ✅ |
-| Hard to organize | ❌ | Visual organization | ✅ |
-| No descriptions | ❌ | Rich documentation | ✅ |
-| Manual commenting | ❌ | One-click disable/enable | ✅ |
+| Traditional Text Editor | 📝  | Enview Visual Editor      | ✨  |
+| ----------------------- | --- | ------------------------- | --- |
+| Manual syntax checking  | ❌  | Automatic error detection | ✅  |
+| Easy to make mistakes   | ❌  | Input validation          | ✅  |
+| Hard to organize        | ❌  | Visual organization       | ✅  |
+| No descriptions         | ❌  | Rich documentation        | ✅  |
+| Manual commenting       | ❌  | One-click disable/enable  | ✅  |
 
 ## 🔧 Format Support
 
 ### Equals Format
+
 ```bash
 # Database configuration
 DATABASE_URL=postgresql://localhost:5432/mydb
@@ -65,6 +71,7 @@ DEBUG_MODE=true
 ```
 
 ### Colon Format
+
 ```yaml
 # Database configuration
 DATABASE_URL: "postgresql://localhost:5432/mydb"

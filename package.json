@@ -83,7 +83,10 @@
     "lint": "eslint src",
     "test": "vscode-test",
     "test:ci": "echo 'Skipping UI tests in CI environment'",
-    "publish": "npx @vscode/vsce publish"
+    "publish": "npx @vscode/vsce publish",
+    "release:patch": "npm version patch && git push origin main --tags",
+    "release:minor": "npm version minor && git push origin main --tags",
+    "release:major": "npm version major && git push origin main --tags"
   },
   "devDependencies": {
     "@types/vscode": "^1.101.0",
