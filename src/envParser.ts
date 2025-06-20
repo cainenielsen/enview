@@ -50,10 +50,32 @@ export class EnvParser {
         // Check if this is a commented-out variable assignment
         let disabledMatch = comment.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/);
         let disabledFormat: 'equals' | 'colon' = 'equals';
+        let disabledInlineComment: string | undefined;
 
-        if (!disabledMatch) {
+        if (disabledMatch) {
+          // Check for inline comment in disabled equals format
+          const [, key, valuePart] = disabledMatch;
+          const inlineCommentMatch = valuePart.match(/^(.*?)\s*#\s*(.+)$/);
+          
+          if (inlineCommentMatch) {
+            const [, valueOnly, inlineCommentText] = inlineCommentMatch;
+            disabledMatch = [disabledMatch[0], key, valueOnly.trim()];
+            disabledInlineComment = inlineCommentText.trim();
+          }
+        } else {
           disabledMatch = comment.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*:\s*"?([^"]*)"?$/);
-          disabledFormat = 'colon';
+          if (disabledMatch) {
+            disabledFormat = 'colon';
+            // Check for inline comment in disabled colon format
+            const [, key, valuePart] = disabledMatch;
+            const inlineCommentMatch = valuePart.match(/^(.*?)\s*#\s*(.+)$/);
+            
+            if (inlineCommentMatch) {
+              const [, valueOnly, inlineCommentText] = inlineCommentMatch;
+              disabledMatch = [disabledMatch[0], key, valueOnly.trim()];
+              disabledInlineComment = inlineCommentText.trim();
+            }
+          }
         }
 
         if (disabledMatch) {
@@ -62,10 +84,20 @@ export class EnvParser {
           const cleanValue = this.cleanValue(value);
           const isQuoted = this.isValueQuoted(value);
 
+          // Combine existing description with inline comment
+          let finalDescription = currentDescription;
+          if (disabledInlineComment) {
+            if (finalDescription) {
+              finalDescription += '\n' + disabledInlineComment;
+            } else {
+              finalDescription = disabledInlineComment;
+            }
+          }
+
           variables.push({
             key: key.trim(),
             value: cleanValue,
-            description: currentDescription,
+            description: finalDescription,
             isQuoted,
             disabled: true
           });
@@ -86,14 +118,34 @@ export class EnvParser {
         descriptionLines = [];
       }
 
-      // Parse variable assignments
+      // Parse variable assignments (with potential inline comments)
       let match = line.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/);
+      let inlineComment: string | undefined;
+
       if (match) {
         format = 'equals';
+        // Check for inline comment in the value part
+        const [, key, valuePart] = match;
+        const inlineCommentMatch = valuePart.match(/^(.*?)\s*#\s*(.+)$/);
+
+        if (inlineCommentMatch) {
+          const [, valueOnly, comment] = inlineCommentMatch;
+          match = [match[0], key, valueOnly.trim()];
+          inlineComment = comment.trim();
+        }
       } else {
         match = line.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*:\s*"?([^"]*)"?$/);
         if (match) {
           format = 'colon';
+          // Check for inline comment in colon format
+          const [, key, valuePart] = match;
+          const inlineCommentMatch = valuePart.match(/^(.*?)\s*#\s*(.+)$/);
+
+          if (inlineCommentMatch) {
+            const [, valueOnly, comment] = inlineCommentMatch;
+            match = [match[0], key, valueOnly.trim()];
+            inlineComment = comment.trim();
+          }
         }
       }
 
@@ -102,10 +154,20 @@ export class EnvParser {
         const cleanValue = this.cleanValue(value);
         const isQuoted = this.isValueQuoted(value);
 
+        // Combine existing description with inline comment
+        let finalDescription = currentDescription;
+        if (inlineComment) {
+          if (finalDescription) {
+            finalDescription += '\n' + inlineComment;
+          } else {
+            finalDescription = inlineComment;
+          }
+        }
+
         variables.push({
           key: key.trim(),
           value: cleanValue,
-          description: currentDescription,
+          description: finalDescription,
           isQuoted
         });
 
