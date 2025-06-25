@@ -81,7 +81,7 @@
     "install-local": "code --install-extension enview.vsix --force",
     "dev": "npm run compile && npm run build-vsix && npm run install-local",
     "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
+    "wareloadtch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
     "lint": "eslint src",
     "test": "vscode-test",
@@ -92,17 +92,17 @@
     "release:major": "npm version major && git push origin main --tags"
   },
   "devDependencies": {
-    "@types/vscode": "^1.101.0",
-    "@types/mocha": "^10.0.10",
-    "@types/node": "20.x",
-    "@typescript-eslint/eslint-plugin": "^8.31.1",
-    "@typescript-eslint/parser": "^8.31.1",
-    "eslint": "^9.25.1",
-    "typescript": "^5.8.3",
-    "ts-loader": "^9.5.2",
-    "webpack": "^5.99.7",
-    "webpack-cli": "^6.0.1",
-    "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.5.2"
+    "@types/vscode": "1.101.0",
+    "@types/mocha": "10.0.10",
+    "@types/node": "24.0.4",
+    "@typescript-eslint/eslint-plugin": "8.35.0",
+    "@typescript-eslint/parser": "8.35.0",
+    "eslint": "9.29.0",
+    "typescript": "5.8.3",
+    "ts-loader": "9.5.2",
+    "webpack": "5.99.9",
+    "webpack-cli": "6.0.1",
+    "@vscode/test-cli": "0.0.11",
+    "@vscode/test-electron": "2.5.2"
   }
 }
