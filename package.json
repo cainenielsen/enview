@@ -20,10 +20,6 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onLanguage:env",
-    "onCustomEditor:enview.envEditor"
-  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
