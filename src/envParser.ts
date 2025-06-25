@@ -56,20 +56,20 @@ export class EnvParser {
           // Check for inline comment in disabled equals format
           const [, key, valuePart] = disabledMatch;
           const inlineCommentMatch = valuePart.match(/^(.*?)\s*#\s*(.+)$/);
-          
+
           if (inlineCommentMatch) {
             const [, valueOnly, inlineCommentText] = inlineCommentMatch;
             disabledMatch = [disabledMatch[0], key, valueOnly.trim()];
             disabledInlineComment = inlineCommentText.trim();
           }
         } else {
-          disabledMatch = comment.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*:\s*"?([^"]*)"?$/);
+          disabledMatch = comment.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*:\s*(.*)$/);
           if (disabledMatch) {
             disabledFormat = 'colon';
             // Check for inline comment in disabled colon format
             const [, key, valuePart] = disabledMatch;
             const inlineCommentMatch = valuePart.match(/^(.*?)\s*#\s*(.+)$/);
-            
+
             if (inlineCommentMatch) {
               const [, valueOnly, inlineCommentText] = inlineCommentMatch;
               disabledMatch = [disabledMatch[0], key, valueOnly.trim()];
@@ -134,18 +134,46 @@ export class EnvParser {
           inlineComment = comment.trim();
         }
       } else {
-        match = line.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*:\s*"?([^"]*)"?$/);
+        match = line.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*:\s*(.*)$/);
         if (match) {
           format = 'colon';
           // Check for inline comment in colon format
           const [, key, valuePart] = match;
-          const inlineCommentMatch = valuePart.match(/^(.*?)\s*#\s*(.+)$/);
 
-          if (inlineCommentMatch) {
-            const [, valueOnly, comment] = inlineCommentMatch;
-            match = [match[0], key, valueOnly.trim()];
-            inlineComment = comment.trim();
+          // Handle inline comments - need to be careful with quoted values
+          let finalValue = valuePart;
+          let inlineCommentText: string | undefined;
+
+          // Look for # that's not inside quotes
+          let inQuotes = false;
+          let quoteChar = '';
+          let commentIndex = -1;
+
+          for (let j = 0; j < valuePart.length; j++) {
+            const char = valuePart[j];
+
+            if (!inQuotes && (char === '"' || char === "'")) {
+              inQuotes = true;
+              quoteChar = char;
+            } else if (inQuotes && char === quoteChar) {
+              // Check if it's escaped
+              if (j === 0 || valuePart[j - 1] !== '\\') {
+                inQuotes = false;
+                quoteChar = '';
+              }
+            } else if (!inQuotes && char === '#') {
+              commentIndex = j;
+              break;
+            }
           }
+
+          if (commentIndex !== -1) {
+            finalValue = valuePart.substring(0, commentIndex).trim();
+            inlineCommentText = valuePart.substring(commentIndex + 1).trim();
+          }
+
+          match = [match[0], key, finalValue];
+          inlineComment = inlineCommentText;
         }
       }
 

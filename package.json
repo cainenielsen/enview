@@ -64,7 +64,7 @@
       "editor/title": [
         {
           "command": "enview.openPreview",
-          "when": "resourceFilename =~ /\\.env($|\\.)/",
+          "when": "resourceExtname =~ /\\.env/ || resourceFilename =~ /\\.env\\./",
           "group": "navigation"
         }
       ]
