@@ -20,7 +20,10 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:env",
+    "onCustomEditor:enview.envEditor"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
@@ -54,7 +57,10 @@
         "displayName": "Environment File Editor",
         "selector": [
           {
-            "filenamePattern": "*.env*"
+            "filenamePattern": ".env"
+          },
+          {
+            "filenamePattern": ".env.*"
           }
         ],
         "priority": "option"
@@ -64,7 +70,7 @@
       "editor/title": [
         {
           "command": "enview.openPreview",
-          "when": "resourceExtname =~ /\\.env/ || resourceFilename =~ /\\.env\\./",
+          "when": "resourceFilename =~ /\\.env($|\\.)/",
           "group": "navigation"
         }
       ]
